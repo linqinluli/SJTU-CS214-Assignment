@@ -1,0 +1,226 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage{ctex}
+\usepackage{amsmath,amscd,amsbsy,amssymb,latexsym,url,bm,amsthm}
+\usepackage{epsfig,graphicx,subfigure}
+\usepackage{enumitem,balance}
+\usepackage{wrapfig}
+\usepackage{mathrsfs,euscript}
+\usepackage[usenames]{xcolor}
+\usepackage{hyperref}
+\usepackage[vlined,ruled,linesnumbered]{algorithm2e}
+\hypersetup{colorlinks=true,linkcolor=black}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{exercise}{Exercise}
+\newtheorem*{solution}{Solution}
+\newtheorem{definition}{Definition}
+\theoremstyle{definition}
+
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+
+\newcommand{\postscript}[2]
+ {\setlength{\epsfxsize}{#2\hsize}
+  \centerline{\epsfbox{#1}}}
+
+\renewcommand{\baselinestretch}{1.0}
+
+\setlength{\oddsidemargin}{-0.365in}
+\setlength{\evensidemargin}{-0.365in}
+\setlength{\topmargin}{-0.3in}
+\setlength{\headheight}{0in}
+\setlength{\headsep}{0in}
+\setlength{\textheight}{10.1in}
+\setlength{\textwidth}{7in}
+\makeatletter \renewenvironment{proof}[1][Proof] {\par\pushQED{\qed}\normalfont\topsep6\p@\@plus6\p@\relax\trivlist\item[\hskip\labelsep\bfseries#1\@addpunct{.}]\ignorespaces}{\popQED\endtrivlist\@endpefalse} \makeatother
+\makeatletter
+\renewenvironment{solution}[1][Solution] {\par\pushQED{\qed}\normalfont\topsep6\p@\@plus6\p@\relax\trivlist\item[\hskip\labelsep\bfseries#1\@addpunct{.}]\ignorespaces}{\popQED\endtrivlist\@endpefalse} \makeatother
+
+\begin{document}
+\noindent
+
+%========================================================================
+\noindent\framebox[\linewidth]{\shortstack[c]{
+\Large{\textbf{Lab01-AlgorithmAnalysis}}\vspace{1mm}\\
+CS214-Algorithm and Complexity, Xiaofeng Gao, Spring 2020.}}
+\begin{center}
+\footnotesize{\color{red}$*$ If there is any problem, please contact TA Shuodian Yu.}
+
+% Please write down your name, student id and email.
+\footnotesize{\color{blue}$*$ Name:Hanzhang Yang  \quad Student ID:518030910022 \quad Email: linqinluli@sjtu.edu.cn}
+\end{center}
+
+\begin{enumerate}
+    \item
+    Please analyze the time complexity of Alg.~\ref{Alg-PSUM} with brief explanations.
+
+    \begin{minipage}[t]{0.8\textwidth}
+    \begin{algorithm}[H]
+        \caption{PSUM}\label{Alg-PSUM}
+        \KwIn{$n=k^2$, $k$ is a positive integer.}
+        \KwOut{$\sum_{i=1}^j i$ for each perfect square $j$ between 1 and $n$.}
+
+        \BlankLine
+
+        $k \leftarrow \sqrt{n}$\;
+
+        \For{$j\leftarrow 1$ {\bf to} $k$}{
+            $sum[j]\leftarrow 0$\;
+            \For{$i \leftarrow 1$ {\bf to} $j^2$}{
+                $sum[j]\leftarrow sum[j]+i$\;
+            }
+        }
+
+        {\bf return} $sum[1\cdots k]$\;
+    \end{algorithm}
+    \end{minipage}
+
+   \begin{solution} 
+    Define $T(n)$ the time complexity.
+    \begin{align*}
+       T(n) &= \sum_{j=1}^{\sqrt{n}} (1+\sum_{i=1}^{j^2} 1)\\
+           &= \sum_{j=1}^{\sqrt{n}} (1+j^2) \\  
+           &= \sqrt{n}+1^2+2^2+3^2+\cdots+\sqrt{n}^2  \\  
+           &= \sqrt{n}+\frac {\sqrt{n}(\sqrt{n}+1)(2\sqrt{n}+1)} {6}  
+          \end{align*}
+
+          Thus $T(n)=\Theta(n^{\frac {3}{2}})$
+   \end{solution}
+
+    \item
+    Analyze the \textbf{average} time complexity of QuickSort in Alg.~\ref{Alg_Quick}.
+
+    \begin{minipage}[t]{0.8\textwidth}
+    \begin{algorithm}[H]
+      \KwIn{An array $A[1,\cdots,n]$}
+      \KwOut{$A[1,\cdots,n]$ sorted nonincreasingly}
+
+      \BlankLine
+      \caption{QuickSort}\label{Alg_Quick}
+
+      %\If{$n \le 1$}{
+      %  \Return\;
+      %}
+
+      $pivot \leftarrow A[n]$; $i \leftarrow 1$\;
+      \For{$j \leftarrow 1$ \KwTo $n-1$}{
+        \If{$A[j] < pivot$}{
+          swap $A[i]$ and $A[j]$\;
+          $i \leftarrow i+1$\;
+        }
+      }
+
+      swap $A[i]$ and $A[n]$\;
+      \lIf{$i>1$}{$\operatorname{QuickSort}(A[1,\cdots,i-1])$}
+      \lIf{$i<n$}{$\operatorname{QuickSort}(A[i+1,\cdots,n])$}
+    \end{algorithm}
+    \end{minipage}
+
+   \begin{solution}
+       Because the main time cost is on the comparsion. Let's think about 
+       two elements $A[i],A[j] (j>i)$. There must be such a sequence $\{A[i],A[i+1],\cdots,A[j-1],A[j]\}$
+
+       Whether $A[i] \quad A[j]$ will be compared depends on the $pivot$.
+
+       If the $pivot$ is outside, the sequence still exists and the probability exists. Thus for this sequence the $pivot$ should be between $A[i] and A[j]$
+
+       If the $pivot$ is $A[i]$ or $A[j]$, they will be compared. Otherwise not.
+
+       So the probability that $A[i] quad A[j]$ are compared is $\frac{2}{j-i+1}$.
+
+       Define $T(n)$ the time cost. We can take the expectation of all number's comparisons as time cost. (Comparsion means $1$. Otherwise means $0$ )
+
+       \begin{align*}
+        T(n) &= \sum_{i=1}^{n} \sum_{j=i+1}^{n} \frac{2}{j-i+1}\\
+            &=  \sum_{i=1}^{n} \frac{2}{2}+\frac{2}{3}+\frac{2}{4}+\cdots+\frac{2}{n-i+1}\\  
+            &=  \sum_{i=1}^{n} O (logn)\\  
+            &=  O(nlogn)
+           \end{align*}
+
+    Thus the average time complexity is $O(nlogn)$.
+
+   \end{solution}
+
+    \item
+    The BubbleSort mentioned in class can be improved by stopping in time if there are no swaps during an iteration. An indicator is used thereby to check whether the array is already sorted. Analyze the \textbf{average} and \textbf{best} time complexity of the improved BubbleSort in Alg.~\ref{Alg_Bubble}.
+
+    \begin{minipage}[t]{0.8\textwidth}
+    \begin{algorithm}[H]
+        \KwIn{An array $A[1,\dots,n]$}
+        \KwOut{$A[1,\dots,n]$ sorted nonincreasingly}
+
+        \BlankLine
+        \caption{BubbleSort}\label{Alg_Bubble}
+
+        $i\leftarrow 1$;$sorted\leftarrow false$\;
+
+        \While{$i\leq n-1$ \textbf{and not} $sorted$}{
+            $sorted\leftarrow true$\;
+            \For{$j\leftarrow n $ \textbf{downto} $i+1$}{
+                \If{$A[j]<A[j-1]$}{
+                    interchange $A[j]$ and $A[j-1]$\;
+                    $sorted\leftarrow false$\;
+                }
+            }
+            $i\leftarrow i+1$\;
+        }
+    \end{algorithm}
+    \end{minipage}
+
+   \begin{solution}
+        \textbf{Best} $\Omega (n)$
+
+        $A[1,\cdots,n]$ has been sorted already. After traversing the array, sorted==true and the cycle ends.
+        Traversing costs $\Omega (n)$
+        
+        \textbf{Average} $\Omega (n^2)$
+
+        Define $A_r[n,n-1,\cdots,1]$ whose elements are in the reverse order of $A$.
+        Thinking about $(x,y) \quad y>x$. Then this order must exist in one of the two array.
+        Thus there are $\frac{n(n-1)}{2}$ orders in $A_r and A$ totally.
+        The average inversion number of $A$ is $\frac{n(n-1)}{4}$.
+
+        Because the BubbleSort exchange only adjacent elements and reduce only one reverse order at a time.
+        It needs $\Omega(n^2)$ exchange. And the worst time complexity is $O(n^2)$. So the average time complexity is $\Omega(n^2)$.
+        
+
+
+    \end{solution}
+
+    \item
+
+    Rank the following functions by order of growth with brief explanations: that is, find an arrangement $g_1, g_2, \ldots , g_{15}$ of the functions $g_1 = \Omega(g_2), g_2 = \Omega(g_3), \ldots, g_{14} = \Omega(g_{15})$.  Partition your list into equivalence classes such that functions $f(n)$ and $g(n)$ are in the same class if and only if $f(n) = \Theta(g(n))$. Use symbols ``$=$'' and ``$\prec$'' to order these functions appropriately.
+    $$
+    \begin{array}{ccccc}
+        2^{\lg n} \quad & \quad (\lg n)^{\lg n} \quad & \quad n^2 \quad & \quad n! \quad & \quad (n + 1)! \\
+        2^n \quad & \quad n^3 \quad & \quad \lg^2 n \quad & \quad e^n \quad & \quad 2^{2^n} \\
+        \lg\lg n \quad & \quad n\cdot 2^n \quad & \quad n \quad & \quad \lg n \quad & \quad 4^{\lg n} \\
+    \end{array}
+    $$
+
+    \begin{solution} L'Hospital's rule
+        $$lglgn\prec lgn \prec lg^2n\prec n = 2^{lgn}\prec (lgn)^{lgn}\prec 4^{lgn}= n^2 \prec n^3  \prec 2^n \prec n\cdot 2^n\prec e^n \prec n! \prec (n+1)!\prec 2^{2^{n}}$$
+    $\lim_{n \to \infty} \frac{lglgn}{lgn}=\frac{1}{lgnln10}=0(L'Hospital's rule) \rightarrow \quad lglgn\prec lgn$
+
+    $\lim_{n \to \infty} \frac{lg^2n}{n}=\frac{2lgn}{nln2}=0(L'Hospital's rule) \rightarrow \quad lg^2n\prec n$
+
+    $2^{lgn}=n \quad 4^{lgn}=n^2$
+
+    $(n+1)!<(n+1)^{n+1}\quad ln(n+1)^{n+1}=(n+1)ln(n+1) \quad ln2^{2^{n}}=2^nln2>n^3>(n+1)ln(n+1) $
+
+    Thus $(n+1)!\prec 2^{2^{n}}$
+    
+        
+  
+    \end{solution}
+
+\end{enumerate}
+
+\vspace{20pt}
+
+\textbf{Remark:} You need to include your .pdf and .tex files in your uploaded .rar or .zip file.
+
+%========================================================================
+\end{document}

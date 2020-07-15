@@ -1,0 +1,7 @@
+# depslib dependency file v1.0
+1586353577 source:d:\study\algorithm and complexity (2020)\homework\lab05\p2.2\p2.2\main.cpp
+	<iostream>
+	<string>
+	<cmath>
+	<fstream>
+
